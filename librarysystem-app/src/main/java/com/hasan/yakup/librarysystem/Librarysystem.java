@@ -1218,6 +1218,114 @@ public class Librarysystem {
     }
 
     /**
+     * @brief Displays the menu for marking a book as read.
+     * @details Clears the screen, writes the list of unmarked books to the console,
+     *          and prompts the user to enter the ID of the book to mark as read.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is marked as read successfully, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     * @throws InterruptedException  If the thread is interrupted while waiting.
+     */
+    public boolean markAsReadMenu(String pathFileBooks)
+            throws FileNotFoundException, IOException, InterruptedException {
+        clearScreen();
+
+        writeUnMarkedBooksToConsole(pathFileBooks);
+
+        out.print("\nEnter the ID of the book to mark as read: ");
+
+        if (!scanner.hasNextInt()) {
+            handleInputError();
+            enterToContinue();
+            return false;
+        }
+
+        int bookId = scanner.nextInt();
+
+        return markAsRead(bookId, pathFileBooks);
+    }
+
+    /**
+     * @brief Marks a book as read.
+     * @details Loads the books, searches for the unmarked book with the specified
+     *          ID, updates its read status, and writes the changes to the file.
+     * @param bookId        The ID of the book to be marked as read.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is marked as read successfully, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean markAsRead(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
+            for (Book book : books) {
+                writer.writeInt(book.getId());
+                writer.writeUTF(book.getName());
+
+                if (book.getId() == bookId && !book.isMarked()) {
+                    writer.writeBoolean(true);
+                    isFound = true;
+                } else {
+                    writer.writeBoolean(book.isMarked());
+                }
+
+                writer.writeBoolean(book.isWishlist());
+                writer.writeBoolean(book.isLoaned());
+            }
+        }
+
+        if (isFound) {
+            out.println("Book with ID '" + bookId + "' has been marked as read successfully.");
+            enterToContinue();
+            return true;
+        }
+
+        out.println("There is no book with ID '" + bookId + "'.");
+        enterToContinue();
+        return false;
+    }
+
+    /**
+     * @brief Displays the history of marked books.
+     * @details Clears the screen, prints the list of marked books to the console,
+     *          and prompts the user to continue.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if there are marked books to display, false otherwise.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean viewHistory(String pathFileBooks) throws InterruptedException, IOException {
+        clearScreen();
+        out.println("Marked Books:");
+        boolean result = writeMarkedBooksToConsole(pathFileBooks);
+        enterToContinue();
+        return result;
+    }
+
+    /**
+     * @brief Displays the menu for the ReadingTracker module.
+     * @details Clears the screen and prints the options for logging progress,
+     *          marking as read, viewing history, or returning to user operations.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean readingTrackerMenu() throws InterruptedException, IOException {
+        clearScreen();
+        out.println("Welcome to ReadingTracker\n\n");
+        out.println("1. Log Progress");
+        out.println("2. Mark As Read");
+        out.println("3. View History");
+        out.println("4. Return User Operations");
+        out.println("Please enter a number to select:");
+
+        return true;
+    }
+
+    /**
      * @brief Logs the progress of reading books.
      * @details Clears the screen, writes the list of books to the console, and
      *          prompts the user to continue.
