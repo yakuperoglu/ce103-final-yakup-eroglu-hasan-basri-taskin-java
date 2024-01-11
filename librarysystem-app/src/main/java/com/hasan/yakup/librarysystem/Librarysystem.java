@@ -1341,4 +1341,71 @@ public class Librarysystem {
         return result;
     }
 
+    /**
+     * @brief Manages the ReadingTracker module.
+     * @details Displays the ReadingTracker menu, processes the user's choice, and
+     *          executes the corresponding operation.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean readingTracker(String pathFileBooks) throws InterruptedException, IOException {
+        int choice;
+        while (true) {
+            readingTrackerMenu();
+
+            choice = tryParseInt(scanner.nextLine());
+
+            if (choice == -1) {
+                handleInputError();
+                enterToContinue();
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    logProgress(pathFileBooks);
+                    break;
+
+                case 2:
+                    markAsReadMenu(pathFileBooks);
+                    break;
+
+                case 3:
+                    viewHistory(pathFileBooks);
+                    break;
+
+                case 4:
+                    return false;
+
+                default:
+                    out.println("Invalid choice. Please try again.");
+                    enterToContinue();
+                    break;
+            }
+        }
+    }
+
+    /**
+     * @brief Displays the menu for user operations.
+     * @details Clears the screen and prints the options for book cataloging, loan
+     *          management, wishlist management, reading tracker, or returning to
+     *          the main menu.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean userMenu() throws InterruptedException, IOException {
+        clearScreen();
+        out.println("Welcome to User Operations\n\n");
+        out.println("1. Book Cataloging");
+        out.println("2. Loan Management");
+        out.println("3. WishList Management");
+        out.println("4. Reading Tracker");
+        out.println("5. Return to Main Menu");
+        out.println("Please enter a number to select:");
+        return true;
+    }
+
 }
