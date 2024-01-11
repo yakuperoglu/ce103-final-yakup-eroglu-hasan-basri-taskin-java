@@ -525,4 +525,150 @@ public class Librarysystem {
         return true;
     }
 
+    /**
+     * @brief Deletes a book from the library.
+     * @details Loads the books, searches for the book with the specified ID, and
+     *          removes it from the file.
+     * @param bookId        The ID of the book to be deleted.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is found and deleted, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean deleteBook(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(new File(pathFileBooks)))) {
+            for (Book book : books) {
+                if (book.getId() != bookId) {
+                    writer.writeInt(book.getId());
+                    writer.writeUTF(book.getName());
+                    writer.writeBoolean(book.isMarked());
+                    writer.writeBoolean(book.isWishlist());
+                    writer.writeBoolean(book.isLoaned());
+                } else {
+                    isFound = true;
+                }
+            }
+        }
+
+        if (isFound) {
+            out.println("Book with ID '" + bookId + "' has been deleted successfully.");
+            enterToContinue();
+            return true;
+        }
+
+        out.println("There is no book you want!");
+        enterToContinue();
+        return false;
+    }
+
+    /**
+     * @brief Displays a menu to update a book.
+     * @details Clears the screen, lists all books, prompts the user to enter a book
+     *          number, and updates the selected book's name.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws IOException          If an I/O error occurs.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     */
+    public boolean updateBookMenu(String pathFileBooks) throws IOException, InterruptedException {
+        clearScreen();
+        writeBooksToConsole(pathFileBooks);
+        out.print("Enter a number to update book: ");
+
+        int bookId = tryParseInt(scanner.nextLine());
+
+        if (bookId == -1) {
+            handleInputError();
+            enterToContinue();
+            return false;
+        }
+
+        out.print("Enter the new name for the book: ");
+        String newBookName = scanner.nextLine();
+
+        updateBook(bookId, newBookName, pathFileBooks);
+        return true;
+    }
+
+    /**
+     * @brief Updates the name of a book in the library.
+     * @details Loads the books, searches for the book with the specified ID, and
+     *          updates its name in the file.
+     * @param bookId        The ID of the book to be updated.
+     * @param newBookName   The new name for the book.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is found and updated, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean updateBook(int bookId, String newBookName, String pathFileBooks)
+            throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(new File(pathFileBooks)))) {
+            for (Book book : books) {
+                writer.writeInt(book.getId());
+                if (book.getId() != bookId) {
+                    writer.writeUTF(book.getName());
+                } else {
+                    writer.writeUTF(newBookName);
+                    isFound = true;
+                }
+                writer.writeBoolean(book.isMarked());
+                writer.writeBoolean(book.isWishlist());
+                writer.writeBoolean(book.isLoaned());
+            }
+        }
+
+        if (isFound) {
+            out.println("Book with ID '" + bookId + "' has been updated successfully.");
+            enterToContinue();
+            return true;
+        }
+
+        out.println("There is no book with the specified ID.");
+        enterToContinue();
+        return false;
+    }
+
+    /**
+     * @brief Displays the book catalog to the console.
+     * @details Clears the screen, writes the book catalog to the console, and
+     *          prompts the user to continue.
+     * @param filePathBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean viewCatalog(String filePathBooks) throws InterruptedException, IOException {
+        clearScreen();
+        writeBooksToConsole(filePathBooks);
+        enterToContinue();
+        return true;
+    }
+
+    /**
+     * @brief Displays the book cataloging menu to the console.
+     * @details Clears the screen and prints the book cataloging menu options.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean bookCatalogingMenu() throws InterruptedException, IOException {
+        clearScreen();
+        out.println("Welcome to Book Operations\n\n");
+        out.println("1. Add Book");
+        out.println("2. Delete Book");
+        out.println("3. Update Book");
+        out.println("4. View Catalog");
+        out.println("5. Return User Operations");
+        out.println("Please enter a number to select:");
+
+        return true;
+    }
+
 }
