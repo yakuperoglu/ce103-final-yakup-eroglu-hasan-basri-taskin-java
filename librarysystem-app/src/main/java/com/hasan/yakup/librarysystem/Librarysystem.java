@@ -1,3 +1,9 @@
+/**
+ * @file Librarysystem.java
+ * @brief A simple library system implementation with basic functionalities.
+ * @author Hasan Yakup
+ * @date [Date]
+ */
 package com.hasan.yakup.librarysystem;
 
 import java.io.DataInputStream;
@@ -7,29 +13,47 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * @class Librarysystem
+ * @brief Represents a library system with basic operations on books.
+ */
 public class Librarysystem {
-	private Scanner scanner; /**<Scanner for user input in the Library System. */
-    private PrintStream out; /**<PrintStream for output in the Library System. */
+    private Scanner scanner;
+    private PrintStream out;
+
     /**
-     * @brief Constructor for the Librarysystem class.
-     *
-     * This constructor initializes a Librarysystem object with the specified input stream for user input
-     * and output stream for printing messages.
-     *
-     * @param in The input stream for user input.
-     * @param out The output stream for printing messages.
+     * @brief Constructor for Librarysystem.
+     * @param scanner Scanner object for user input.
+     * @param out PrintStream object for output.
      */
-    public Librarysystem(InputStream in, PrintStream out) {
-        this.scanner = new Scanner(in);
+    public Librarysystem(Scanner scanner, PrintStream out) {
+        this.scanner = scanner;
         this.out = out;
     }
-	public void clearScreen() throws InterruptedException, IOException {  
+
+     /**
+     * @brief Gets a new unique ID for a book based on the existing books in the library.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return A new unique ID for a book.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException If an I/O error occurs.
+     */
+    public int getNewId(String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        return books.size() + 1;
+    }
+
+    /**
+     * @brief Clears the console screen.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException If an I/O error occurs.
+     */
+    public void clearScreen() throws InterruptedException, IOException {
         String operatingSystem = System.getProperty("os.name");
         if (operatingSystem.contains("Windows")) {
             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -37,31 +61,47 @@ public class Librarysystem {
             out.print("\033[H\033[2J");
             out.flush();
         }
-   }
-	public boolean addBook(String bookName, String pathFileBooks) throws FileNotFoundException, IOException {
-        Book newBook = new Book();
-        newBook.setId(getNewId(pathFileBooks));
-        newBook.setName(bookName);
-        newBook.setMarked(false);
-        newBook.setWishlist(false);
-        newBook.setLoaned(false);
-
-        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks, true))) {
-            writer.writeInt(newBook.getId());
-            writer.writeUTF(newBook.getName());
-            writer.writeBoolean(newBook.isMarked());
-            writer.writeBoolean(newBook.isWishlist());
-            writer.writeBoolean(newBook.isLoaned());
-        } 
-
-        return true;
     }
 
-	 public int getNewId(String pathFileBooks) throws FileNotFoundException, IOException {
-	        List<Book> books = loadBooks(pathFileBooks);
-	        return books.size() + 1;
-	    }
-    
+    /**
+     * @brief Handles input errors by displaying a message to the user.
+     * @return Always returns false to indicate an input error.
+     */
+    public boolean handleInputError() {
+        out.println("Only enter numerical value");
+        return false;
+    }
+
+    /**
+ * @brief Attempts to parse the given string into an integer.
+ * @param value The string to be parsed.
+ * @return The parsed integer if successful, or -1 if parsing fails.
+ */
+    private int tryParseInt(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    /**
+ * @brief Waits for user input to continue the program.
+ * @details Displays a message prompting the user to press any key to continue.
+ */
+    private void enterToContinue() {
+        out.println("Press any key to continue...");
+        scanner.nextLine();
+    }
+
+    /**
+ * @brief Loads books from a file and returns a list of Book objects.
+ * @details Reads book information from the specified file and populates a List of Book objects.
+ * @param pathFileBooks The path to the file containing book information.
+ * @return List of Book objects representing the books in the library.
+ * @throws FileNotFoundException If the specified file is not found.
+ * @throws IOException If an I/O error occurs.
+ */
     public List<Book> loadBooks(String pathFileBooks) throws FileNotFoundException, IOException {
         List<Book> books = new ArrayList<Book>();
 
