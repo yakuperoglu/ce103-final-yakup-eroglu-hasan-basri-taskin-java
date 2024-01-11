@@ -321,5 +321,63 @@ public class LibrarysystemTest {
 
         assertFalse(result);
     }
+    
+    @Test
+    public void testUpdateBookMenu_ShouldUpdateBookSuccessfully() throws IOException, InterruptedException {
+
+        createTestFile();
+
+        String inputString = "2\nUpdatedBook\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.updateBookMenu(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testUpdateBookMenu_InvalidInput_ShouldPrintErrorMessage() throws IOException, InterruptedException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        String inputString = "qwe\n\n132\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.updateBookMenu(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testUpdateBookMenu_InvalidBookId_ShouldReturnFalse() throws IOException, InterruptedException {
+
+        createTestFile();
+
+        String inputString = "\n123132";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.updateBookMenu(testFilePathBooks);
+
+        assertFalse(result); // Sadece boolean kontrolü yapılacak.
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        System.setIn(System.in);
+    }
+
 
 }
