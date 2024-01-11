@@ -671,4 +671,154 @@ public class Librarysystem {
         return true;
     }
 
+    /**
+     * @brief Manages book cataloging operations.
+     * @details Displays the book cataloging menu, processes the user's choice, and
+     *          executes the corresponding operation.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean bookCataloging(String pathFileBooks) throws InterruptedException, IOException {
+        int choice;
+        while (true) {
+            bookCatalogingMenu();
+
+            choice = tryParseInt(scanner.nextLine());
+
+            if (choice == -1) {
+                handleInputError();
+                enterToContinue();
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    addBookMenu(pathFileBooks);
+                    break;
+
+                case 2:
+                    deleteBookMenu(pathFileBooks);
+                    break;
+
+                case 3:
+                    updateBookMenu(pathFileBooks);
+                    break;
+
+                case 4:
+                    viewCatalog(pathFileBooks);
+                    break;
+
+                case 5:
+                    return false;
+
+                default:
+                    out.println("Invalid choice. Please try again.");
+                    enterToContinue();
+                    break;
+            }
+        }
+    }
+
+    /**
+     * @brief Authenticates a user by checking the email and password against
+     *        existing user data.
+     * @details Reads user data from the specified file and compares it with the
+     *          provided user credentials.
+     * @param user          The user to be authenticated.
+     * @param pathFileUsers The path to the file containing user information.
+     * @return True if the login is successful, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean loginUser(User user, String pathFileUsers) throws FileNotFoundException, IOException {
+        if (new File(pathFileUsers).exists()) {
+            try (DataInputStream reader = new DataInputStream(new FileInputStream(pathFileUsers))) {
+                while (reader.available() > 0) {
+                    User existingUser = new User();
+                    existingUser.setEmail(reader.readUTF());
+                    existingUser.setPassword(reader.readUTF());
+
+                    if (existingUser.getEmail().equals(user.getEmail())
+                            && existingUser.getPassword().equals(user.getPassword())) {
+                        out.println("Login successful.");
+                        enterToContinue();
+                        return true;
+                    }
+                }
+            }
+        }
+        out.println("Invalid email or password. Please try again.");
+        enterToContinue();
+        return false;
+    }
+
+    /**
+     * @brief Displays a menu for user login and authenticates the user.
+     * @details Prompts the user to enter email and password, and attempts to
+     *          authenticate the user.
+     * @param pathFileUsers The path to the file containing user information.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean loginUserMenu(String pathFileUsers) throws InterruptedException, IOException {
+        clearScreen();
+        User loginUser = new User();
+
+        out.print("Enter email: ");
+        loginUser.setEmail(scanner.nextLine());
+
+        out.print("Enter password: ");
+        loginUser.setPassword(scanner.nextLine());
+
+        return loginUser(loginUser, pathFileUsers);
+    }
+
+    /**
+     * @brief Displays the loan management menu to the console.
+     * @details Clears the screen and prints the loan management menu options.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    private boolean loanManagementMenu() throws InterruptedException, IOException {
+        clearScreen();
+        out.println("Loan Management Menu\n\n");
+        out.println("1. Give Book");
+        out.println("2. Borrow Book");
+        out.println("3. View Borrowed Books");
+        out.println("4. Return to User Operations Menu");
+        out.println("Please enter a number to select:");
+        return true;
+    }
+
+    /**
+     * @brief Displays the menu for giving back a borrowed book.
+     * @details Clears the screen, writes the list of borrowed books to the console,
+     *          and prompts the user to enter the ID of the book to give back.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is given back successfully, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     * @throws InterruptedException  If the thread is interrupted while waiting.
+     */
+    public boolean giveBookMenu(String pathFileBooks) throws FileNotFoundException, IOException, InterruptedException {
+        clearScreen();
+        writeBorrowedBooksToConsole(pathFileBooks);
+
+        out.print("Enter the ID of the book you want to give back: ");
+
+        int bookId = tryParseInt(scanner.nextLine());
+
+        if (bookId == -1) {
+            handleInputError();
+            enterToContinue();
+            return false;
+        }
+
+        return giveBook(bookId, pathFileBooks);
+    }
+
 }
