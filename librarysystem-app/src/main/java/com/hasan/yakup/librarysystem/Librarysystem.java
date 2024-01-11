@@ -221,15 +221,17 @@ public class Librarysystem {
 
         return true;
     }
-    
+
     /**
- * @brief Writes wishlisted books to the console.
- * @details Displays information about each wishlisted book in the library to the console.
- * @param pathFileBooks The path to the file containing book information.
- * @return True if wishlisted books are found and displayed, false if no books are wishlisted.
- * @throws FileNotFoundException If the specified file is not found.
- * @throws IOException If an I/O error occurs.
- */
+     * @brief Writes wishlisted books to the console.
+     * @details Displays information about each wishlisted book in the library to
+     *          the console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if wishlisted books are found and displayed, false if no books
+     *         are wishlisted.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
     public boolean writeWishlistedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
         List<Book> books = loadBooks(pathFileBooks);
         boolean isFound = false;
@@ -254,13 +256,15 @@ public class Librarysystem {
     }
 
     /**
- * @brief Writes unwishlisted books to the console.
- * @details Displays information about each unwishlisted book in the library to the console.
- * @param pathFileBooks The path to the file containing book information.
- * @return True if unwishlisted books are found and displayed, false if all books are wishlisted.
- * @throws FileNotFoundException If the specified file is not found.
- * @throws IOException If an I/O error occurs.
- */
+     * @brief Writes unwishlisted books to the console.
+     * @details Displays information about each unwishlisted book in the library to
+     *          the console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if unwishlisted books are found and displayed, false if all
+     *         books are wishlisted.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
     public boolean writeUnWishlistedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
         List<Book> books = loadBooks(pathFileBooks);
         boolean isFound = false;
@@ -285,13 +289,15 @@ public class Librarysystem {
     }
 
     /**
- * @brief Writes unmarked books to the console.
- * @details Displays information about each unmarked book in the library to the console.
- * @param pathFileBooks The path to the file containing book information.
- * @return True if unmarked books are found and displayed, false if all books are marked.
- * @throws FileNotFoundException If the specified file is not found.
- * @throws IOException If an I/O error occurs.
- */
+     * @brief Writes unmarked books to the console.
+     * @details Displays information about each unmarked book in the library to the
+     *          console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if unmarked books are found and displayed, false if all books
+     *         are marked.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
     public boolean writeUnMarkedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
         List<Book> books = loadBooks(pathFileBooks);
         boolean isFound = false;
@@ -313,99 +319,210 @@ public class Librarysystem {
         }
         return true;
     }
-    
+
     /**
- * @brief Writes wishlisted books to the console.
- * @details Displays information about each wishlisted book in the library to the console.
- * @param pathFileBooks The path to the file containing book information.
- * @return True if wishlisted books are found and displayed, false if no books are wishlisted.
- * @throws FileNotFoundException If the specified file is not found.
- * @throws IOException If an I/O error occurs.
- */
-public boolean writeWishlistedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
-    List<Book> books = loadBooks(pathFileBooks);
-    boolean isFound = false;
+     * @brief Writes wishlisted books to the console.
+     * @details Displays information about each wishlisted book in the library to
+     *          the console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if wishlisted books are found and displayed, false if no books
+     *         are wishlisted.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean writeWishlistedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
 
-    for (Book book : books) {
-        if (book.isWishlist()) {
-            isFound = true;
-            String readStatus = book.isMarked() ? "Read" : "Unread";
-            String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
+        for (Book book : books) {
+            if (book.isWishlist()) {
+                isFound = true;
+                String readStatus = book.isMarked() ? "Read" : "Unread";
+                String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
 
-            out.println(
-                    String.format("%d. %s (%s : %s)", book.getId(), book.getName(), readStatus, wishlistStatus));
+                out.println(
+                        String.format("%d. %s (%s : %s)", book.getId(), book.getName(), readStatus, wishlistStatus));
+            }
         }
-    }
 
-    if (!isFound) {
-        out.println("You bought all the books on your wish list.");
-        return false;
-    }
-
-    return true;
-}
-
-/**
-* @brief Writes unwishlisted books to the console.
-* @details Displays information about each unwishlisted book in the library to the console.
-* @param pathFileBooks The path to the file containing book information.
-* @return True if unwishlisted books are found and displayed, false if all books are wishlisted.
-* @throws FileNotFoundException If the specified file is not found.
-* @throws IOException If an I/O error occurs.
-*/
-public boolean writeUnWishlistedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
-    List<Book> books = loadBooks(pathFileBooks);
-    boolean isFound = false;
-
-    for (Book book : books) {
-        if (!book.isWishlist()) {
-            isFound = true;
-            String readStatus = book.isMarked() ? "Read" : "Unread";
-            String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
-
-            out.println(
-                    String.format("%d. %s (%s : %s)", book.getId(), book.getName(), readStatus, wishlistStatus));
+        if (!isFound) {
+            out.println("You bought all the books on your wish list.");
+            return false;
         }
+
+        return true;
     }
 
-    if (!isFound) {
-        out.println("All books are on the wish list.");
-        return false;
-    }
+    /**
+     * @brief Writes unwishlisted books to the console.
+     * @details Displays information about each unwishlisted book in the library to
+     *          the console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if unwishlisted books are found and displayed, false if all
+     *         books are wishlisted.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean writeUnWishlistedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
 
-    return true;
-}
+        for (Book book : books) {
+            if (!book.isWishlist()) {
+                isFound = true;
+                String readStatus = book.isMarked() ? "Read" : "Unread";
+                String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
 
-/**
-* @brief Writes unmarked books to the console.
-* @details Displays information about each unmarked book in the library to the console.
-* @param pathFileBooks The path to the file containing book information.
-* @return True if unmarked books are found and displayed, false if all books are marked.
-* @throws FileNotFoundException If the specified file is not found.
-* @throws IOException If an I/O error occurs.
-*/
-public boolean writeUnMarkedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
-    List<Book> books = loadBooks(pathFileBooks);
-    boolean isFound = false;
-
-    for (Book book : books) {
-        if (!book.isMarked()) {
-            isFound = true;
-            String readStatus = book.isMarked() ? "Read" : "Unread";
-            String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
-
-            out.println(
-                    book.getId() + ". " + book.getName() + " (" + readStatus + " : " + wishlistStatus + ")");
+                out.println(
+                        String.format("%d. %s (%s : %s)", book.getId(), book.getName(), readStatus, wishlistStatus));
+            }
         }
+
+        if (!isFound) {
+            out.println("All books are on the wish list.");
+            return false;
+        }
+
+        return true;
     }
 
-    if (!isFound) {
-        out.println("There are no unmarked books.");
-        return false;
+    /**
+     * @brief Writes unmarked books to the console.
+     * @details Displays information about each unmarked book in the library to the
+     *          console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if unmarked books are found and displayed, false if all books
+     *         are marked.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean writeUnMarkedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        for (Book book : books) {
+            if (!book.isMarked()) {
+                isFound = true;
+                String readStatus = book.isMarked() ? "Read" : "Unread";
+                String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
+
+                out.println(
+                        book.getId() + ". " + book.getName() + " (" + readStatus + " : " + wishlistStatus + ")");
+            }
+        }
+
+        if (!isFound) {
+            out.println("There are no unmarked books.");
+            return false;
+        }
+        return true;
     }
-    return true;
-}
 
+    /**
+     * @brief Writes marked books to the console.
+     * @details Displays information about each marked book in the library to the
+     *          console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if marked books are found and displayed, false if no books are
+     *         marked.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean writeMarkedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
 
+        for (Book book : books) {
+            if (book.isMarked()) {
+                isFound = true;
+                String readStatus = book.isMarked() ? "Read" : "Unread";
+                String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
+
+                out.println(
+                        book.getId() + ". " + book.getName() + " (" + readStatus + " : " + wishlistStatus + ")");
+            }
+        }
+
+        if (!isFound) {
+            out.println("There are no marked books.");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @brief Displays a menu to add a new book.
+     * @details Clears the screen, prompts the user to enter a book name, and adds
+     *          the book to the library.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean addBookMenu(String pathFileBooks) throws InterruptedException, IOException {
+        clearScreen();
+        out.print("Enter a book name: ");
+        String bookName = scanner.nextLine();
+        addBook(bookName, pathFileBooks);
+        return true;
+    }
+
+    /**
+     * @brief Adds a new book to the library.
+     * @details Creates a new Book object with a unique ID, sets its properties, and
+     *          writes it to the file.
+     * @param bookName      The name of the book to be added.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean addBook(String bookName, String pathFileBooks) throws FileNotFoundException, IOException {
+        Book newBook = new Book();
+        newBook.setId(getNewId(pathFileBooks));
+        newBook.setName(bookName);
+        newBook.setMarked(false);
+        newBook.setWishlist(false);
+        newBook.setLoaned(false);
+
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks, true))) {
+            writer.writeInt(newBook.getId());
+            writer.writeUTF(newBook.getName());
+            writer.writeBoolean(newBook.isMarked());
+            writer.writeBoolean(newBook.isWishlist());
+            writer.writeBoolean(newBook.isLoaned());
+        }
+
+        return true;
+    }
+
+    /**
+     * @brief Displays a menu to delete a book.
+     * @details Clears the screen, lists all books, prompts the user to enter a book
+     *          number, and deletes the selected book.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     * @throws InterruptedException  If the thread is interrupted while waiting.
+     */
+    public boolean deleteBookMenu(String pathFileBooks)
+            throws FileNotFoundException, IOException, InterruptedException {
+        clearScreen();
+        writeBooksToConsole(pathFileBooks);
+        out.print("Enter a number to delete book: ");
+
+        int bookId = tryParseInt(scanner.nextLine());
+
+        if (bookId == -1) {
+            handleInputError();
+            enterToContinue();
+            return false;
+        }
+
+        // Delete the book with the specified ID.
+        deleteBook(bookId, pathFileBooks);
+        return true;
+    }
 
 }
