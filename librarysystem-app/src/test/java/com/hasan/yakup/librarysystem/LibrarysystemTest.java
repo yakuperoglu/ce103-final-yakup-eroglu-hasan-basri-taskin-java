@@ -598,5 +598,106 @@ public class LibrarysystemTest {
         assertTrue(result);
 
     }
+    
+    @Test
+    public void testRemoveFromWishListMenu_InputError()
+            throws FileNotFoundException, IOException, InterruptedException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        String inputString = "qwe\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.removeFromWishListMenu(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testRemoveFromWishListMenu_ShouldRemoveBookAndReturnTrue() throws IOException, InterruptedException {
+
+        String inputString = "2\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        createTestFile();
+
+        boolean result = library.removeFromWishListMenu(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void addBook_ShouldAddBookToList() throws FileNotFoundException,
+            IOException {
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+        boolean result = library.addBook("Test Book", testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testRemoveFromWishListMenu_InvalidBookId() throws IOException,
+            InterruptedException {
+
+        String inputString = "8448\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        createTestFile();
+
+        boolean result = library.removeFromWishListMenu(testFilePathBooks);
+
+        assertFalse(result);
+
+    }
+
+    @Test
+    public void testAddToWishListMenu_InputError() throws FileNotFoundException,
+            IOException, InterruptedException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        String inputString = "qwe\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.addToWishListMenu(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testAddToWishListMenu_ShouldAddBookAndReturnTrue() throws IOException, InterruptedException {
+
+        createTestFile();
+
+        String inputString = "4\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.addToWishListMenu(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
 
 }
