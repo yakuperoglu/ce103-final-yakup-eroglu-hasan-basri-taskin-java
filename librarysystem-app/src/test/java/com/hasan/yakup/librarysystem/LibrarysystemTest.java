@@ -598,7 +598,7 @@ public class LibrarysystemTest {
         assertTrue(result);
 
     }
-    
+
     @Test
     public void testRemoveFromWishListMenu_InputError()
             throws FileNotFoundException, IOException, InterruptedException {
@@ -699,5 +699,110 @@ public class LibrarysystemTest {
         assertTrue(result);
     }
 
+    @Test
+    public void testAddToWishListMenu_InvalidBookId() throws IOException,
+            InterruptedException {
+
+        String inputString = "89\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        createTestFile();
+
+        boolean result = library.addToWishListMenu(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testWishList_ReturnsFalseOnReturnToUserOperations() throws InterruptedException, IOException {
+
+        String inputString = "qwe\n1\n\n2\n1\n\n3\n\n1\n4";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.wishList(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testWriteBooksToConsole_NoBooks() throws FileNotFoundException,
+            IOException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+
+        boolean result = library.writeBooksToConsole(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testWriteBooksToConsole_ShouldWriteBooks() throws FileNotFoundException, IOException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+
+        boolean result = library.writeBooksToConsole(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testWriteMarkedBooksToConsole_NoMarkedBooks() throws FileNotFoundException, IOException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+
+        boolean result = library.writeMarkedBooksToConsole(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testWriteMarkedBooksToConsole_ShouldWriteMarkedBooks() throws FileNotFoundException, IOException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+
+        boolean result = library.writeMarkedBooksToConsole(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testWriteUnMarkedBooksToConsole_NoUnmarkedBooks() throws FileNotFoundException, IOException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+
+        boolean result = library.writeUnMarkedBooksToConsole(testFilePathBooks);
+
+        assertFalse(result);
+
+    }
 
 }
