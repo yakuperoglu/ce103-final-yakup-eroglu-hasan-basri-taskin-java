@@ -99,5 +99,60 @@ public class LibrarysystemTest {
         int result = library.mainMenu(testFilePathUsers, testFilePathBooks);
         assertEquals(0, result);
     }
+    
+    @Test
+    public void testMain_Menu_DefaultChoice_ShouldPrintInvalidChoiceAndExit() throws InterruptedException, IOException {
+        String input = "abc\n1231231234\n4";
+
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        Scanner testScanner = new Scanner(in);
+
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        int result = library.mainMenu(testFilePathUsers, testFilePathBooks);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testRegisterUser_ShouldRegisterUser() throws InterruptedException, IOException {
+        String input = "\ntest@example.com\ntestpassword\n";
+
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        Scanner testScanner = new Scanner(in);
+
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.registerMenu(testFilePathUsers);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testLoginUser_ShouldLoginUserSuccessfully()
+            throws FileNotFoundException, IOException, InterruptedException {
+
+        User testUser = new User();
+        testUser.setEmail("test@gmail.com");
+        testUser.setPassword("123");
+
+        String inputString = "\ntest@gmail.com\n123\n\n";
+
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        library.registerUser(testUser, testFilePathUsers);
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        System.setIn(new ByteArrayInputStream(inputString.getBytes()));
+
+        boolean result = library.loginUserMenu(testFilePathUsers);
+
+        assertTrue(result);
+    }
+
 
 }
