@@ -421,7 +421,7 @@ public class LibrarysystemTest {
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         System.setIn(System.in);
     }
-    
+
     @Test
     public void testWriteBorrowedBooksToConsole_ShouldntFindBooks() throws FileNotFoundException, IOException {
 
@@ -496,5 +496,107 @@ public class LibrarysystemTest {
 
     }
 
+    @Test
+    public void testGiveBookMenu_InvalidInput() throws FileNotFoundException,
+            IOException, InterruptedException {
+
+        String inputString = "qwe\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.giveBookMenu(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testGiveBookMenu_ShouldGiveBookBackAndReturnTrue()
+            throws FileNotFoundException, IOException, InterruptedException {
+
+        createTestFile();
+
+        String inputString = "2\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.giveBookMenu(testFilePathBooks);
+
+        assertTrue(result);
+
+    }
+
+    @Test
+    public void testGiveBookMenu_ShouldNotGiveBookBackAndReturnFalse()
+            throws FileNotFoundException, IOException, InterruptedException {
+
+        createTestFile();
+
+        String inputString = "1\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.giveBookMenu(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testGiveBook_ShouldGiveBookBackAndReturnTrue() throws IOException {
+
+        createTestFile();
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+        boolean result = library.giveBook(2, testFilePathBooks);
+
+        assertTrue(result);
+
+    }
+
+    @Test
+    public void testGiveBook_ShouldNotGiveBookBackAndReturnFalse() throws IOException {
+
+        createTestFile();
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+        boolean result = library.giveBook(1, testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testWishList_InvalidOption() throws InterruptedException,
+            IOException {
+
+        String inputString = "312\n\nqwe\n\n1\n\n2\n1\n\n3\n1\n\n4\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.wishList(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testListWishList_ShouldWriteBooksAndReturnTrue() throws IOException, InterruptedException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+
+        boolean result = library.listWishList(testFilePathBooks);
+
+        assertTrue(result);
+
+    }
 
 }
