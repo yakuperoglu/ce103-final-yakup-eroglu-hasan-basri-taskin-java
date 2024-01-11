@@ -214,5 +214,57 @@ public class LibrarysystemTest {
 
         assertEquals(result, 0);
     }
+    
+    @Test
+    public void testDeleteBookMenu_SuccessfulDeletion() throws IOException,
+            InterruptedException {
+        createTestFile();
+
+        String inputString = "2\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.deleteBookMenu(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testDeleteBookMenu_ShouldInvalidInput() throws IOException,
+            InterruptedException {
+
+        createTestFile();
+
+        String inputString = "qwe\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.deleteBookMenu(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testDeleteBook_BookNotFound() throws IOException,
+            InterruptedException {
+
+        createTestFile();
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.deleteBook(5, testFilePathBooks);
+
+        assertFalse(result);
+    }
+
 
 }
