@@ -1111,4 +1111,126 @@ public class Librarysystem {
         return removeFromWishList(bookId, pathFileBooks);
     }
 
+    /**
+     * @brief Removes a book from the wishlist.
+     * @details Loads the books, searches for the wishlisted book with the specified
+     *          ID, updates its wishlist status, and writes the changes to the file.
+     * @param bookId        The ID of the book to be removed from the wishlist.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is removed from the wishlist successfully, false
+     *         otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean removeFromWishList(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
+            for (Book book : books) {
+                writer.writeInt(book.getId());
+                writer.writeUTF(book.getName());
+                writer.writeBoolean(book.isMarked());
+                if (book.getId() == bookId && book.isWishlist()) {
+                    isFound = true;
+                    writer.writeBoolean(false);
+                } else {
+                    writer.writeBoolean(book.isWishlist());
+                }
+                writer.writeBoolean(book.isLoaned());
+            }
+        }
+
+        if (isFound) {
+            out.println("Book with ID '" + bookId + "' has been removed from your wishlist.");
+            enterToContinue();
+            return true;
+        }
+
+        out.println("There is no wishlisted book with ID '" + bookId + "'.");
+        enterToContinue();
+        return false;
+    }
+
+    /**
+     * @brief Displays the wishlist management menu.
+     * @details Clears the screen and prints the wishlist management menu options.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    private boolean wishListMenu() throws InterruptedException, IOException {
+        clearScreen();
+        out.println("WishList Menu\n\n");
+        out.println("1. List WishList");
+        out.println("2. Add to WishList");
+        out.println("3. Remove from WishList");
+        out.println("4. Return to User Operations Menu");
+        out.println("Please enter a number to select:");
+        return true;
+    }
+
+    /**
+     * @brief Manages wishlist operations.
+     * @details Displays the wishlist menu, processes the user's choice, and
+     *          executes the corresponding operation.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean wishList(String pathFileBooks) throws InterruptedException, IOException {
+        int choice;
+
+        while (true) {
+            wishListMenu();
+
+            choice = tryParseInt(scanner.nextLine());
+
+            if (choice == -1) {
+                handleInputError();
+                enterToContinue();
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    listWishList(pathFileBooks);
+                    break;
+
+                case 2:
+                    addToWishListMenu(pathFileBooks);
+                    break;
+
+                case 3:
+                    removeFromWishListMenu(pathFileBooks);
+                    break;
+
+                case 4:
+                    return false;
+
+                default:
+                    out.println("Invalid choice. Please try again.");
+                    enterToContinue();
+                    break;
+            }
+        }
+    }
+
+    /**
+     * @brief Logs the progress of reading books.
+     * @details Clears the screen, writes the list of books to the console, and
+     *          prompts the user to continue.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if there are books to display, false otherwise.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean logProgress(String pathFileBooks) throws InterruptedException, IOException {
+        clearScreen();
+        boolean result = writeBooksToConsole(pathFileBooks);
+        enterToContinue();
+        return result;
+    }
+
 }
