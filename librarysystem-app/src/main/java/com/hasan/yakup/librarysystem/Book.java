@@ -1,13 +1,22 @@
 package com.hasan.yakup.librarysystem;
 
 public class Book {
-	private int id;
+    private int id;
     private String name;
     private boolean isMarked;
     private boolean isWishlist;
     private boolean isLoaned;
 
-    // Getter and Setter methods go here
+    public Book() {
+    }
+
+    public Book(int bookId, String bookname, boolean isMarked, boolean isWishlist, boolean isLoaned) {
+        this.id = bookId;
+        this.name = bookname;
+        this.isMarked = isMarked;
+        this.isWishlist = isWishlist;
+        this.isLoaned = isLoaned;
+    }
 
     public int getId() {
         return id;
