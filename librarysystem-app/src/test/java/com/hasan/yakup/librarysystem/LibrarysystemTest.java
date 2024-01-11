@@ -214,7 +214,7 @@ public class LibrarysystemTest {
 
         assertEquals(result, 0);
     }
-    
+
     @Test
     public void testDeleteBookMenu_SuccessfulDeletion() throws IOException,
             InterruptedException {
@@ -266,5 +266,60 @@ public class LibrarysystemTest {
         assertFalse(result);
     }
 
+    @Test
+    public void testUserOperations_ReturnsFalseOnExit() throws InterruptedException, IOException {
+        String inputString = "qwe\n\n1233\n\n1\n5\n2\n4\n3\n4\n4\n4\n5\n";
+        System.setIn(new ByteArrayInputStream(inputString.getBytes()));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+        ;
+
+        boolean result = library.userOperations(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testBookCataloging_ReturnsFalseOnReturnToUserOperations() throws InterruptedException, IOException {
+
+        // String inputString = "qwe\n1\nqwe\n2\n1\n1\nqwe\n3\n1\nqwe1\n4\n321\n5\n";
+        String inputString = "qwe\n\n321\n\n1\nBookName\n2\n1\n\n3\n1\nqwe\n\n4\n\n5\n";
+        System.setIn(new ByteArrayInputStream(inputString.getBytes()));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.bookCataloging(testFilePathBooks);
+
+        assertFalse(result);
+
+    }
+
+    @Test
+    public void testLoanManagement_ReturnsFalseOnReturnToUserOperations() throws IOException, InterruptedException {
+
+        createTestFile();
+
+        String inputString = "qwe\n\n321\n\n2\n1\n\n1\n1\n\n3\n\n4\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.loanManagement(testFilePathBooks);
+
+        assertFalse(result);
+    }
 
 }
