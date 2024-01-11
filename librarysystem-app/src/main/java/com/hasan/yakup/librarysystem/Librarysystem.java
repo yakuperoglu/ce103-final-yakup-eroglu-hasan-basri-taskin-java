@@ -820,114 +820,295 @@ public class Librarysystem {
 
         return giveBook(bookId, pathFileBooks);
     }
-    
-    
-/**
- * @brief Gives back a borrowed book.
- * @details Loads the books, searches for the book with the specified ID, updates its loan status, and writes the changes to the file.
- * @param bookId The ID of the book to be given back.
- * @param pathFileBooks The path to the file containing book information.
- * @return True if the book is given back successfully, false otherwise.
- * @throws FileNotFoundException If the specified file is not found.
- * @throws IOException If an I/O error occurs.
- */
-public boolean giveBook(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
-    List<Book> books = loadBooks(pathFileBooks);
-    boolean isFound = false;
 
-    try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
-        for (Book book : books) {
-            writer.writeInt(book.getId());
-            writer.writeUTF(book.getName());
-            writer.writeBoolean(book.isMarked());
-            writer.writeBoolean(book.isWishlist());
+    /**
+     * @brief Gives back a borrowed book.
+     * @details Loads the books, searches for the book with the specified ID,
+     *          updates its loan status, and writes the changes to the file.
+     * @param bookId        The ID of the book to be given back.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is given back successfully, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean giveBook(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
 
-            if (book.getId() == bookId && book.isLoaned()) {
-                writer.writeBoolean(false);
-                isFound = true;
-            } else {
-                writer.writeBoolean(book.isLoaned());
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
+            for (Book book : books) {
+                writer.writeInt(book.getId());
+                writer.writeUTF(book.getName());
+                writer.writeBoolean(book.isMarked());
+                writer.writeBoolean(book.isWishlist());
+
+                if (book.getId() == bookId && book.isLoaned()) {
+                    writer.writeBoolean(false);
+                    isFound = true;
+                } else {
+                    writer.writeBoolean(book.isLoaned());
+                }
             }
         }
-    }
 
-    if (isFound) {
-        out.println("Book returned successfully.");
-        enterToContinue();
-        return true;
-    }
+        if (isFound) {
+            out.println("Book returned successfully.");
+            enterToContinue();
+            return true;
+        }
 
-    out.println("There is no book you want!");
-    enterToContinue();
-    return false;
-}
-
-/**
-* @brief Displays the menu for borrowing a book.
-* @details Clears the screen, writes the list of available books to the console, and prompts the user to enter the ID of the book to borrow.
-* @param pathFileBooks The path to the file containing book information.
-* @return True if the book is borrowed successfully, false otherwise.
-* @throws FileNotFoundException If the specified file is not found.
-* @throws IOException If an I/O error occurs.
-* @throws InterruptedException If the thread is interrupted while waiting.
-*/
-public boolean borrowBookMenu(String pathFileBooks)
-        throws FileNotFoundException, IOException, InterruptedException {
-    clearScreen();
-    writeUnBorrowedBooksToConsole(pathFileBooks);
-
-    out.print("Enter the ID of the book you want to borrow: ");
-
-    int bookId = tryParseInt(scanner.nextLine());
-
-    if (bookId == -1) {
-        handleInputError();
+        out.println("There is no book you want!");
         enterToContinue();
         return false;
     }
 
-    return borrowBook(bookId, pathFileBooks);
-}
+    /**
+     * @brief Displays the menu for borrowing a book.
+     * @details Clears the screen, writes the list of available books to the
+     *          console, and prompts the user to enter the ID of the book to borrow.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is borrowed successfully, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     * @throws InterruptedException  If the thread is interrupted while waiting.
+     */
+    public boolean borrowBookMenu(String pathFileBooks)
+            throws FileNotFoundException, IOException, InterruptedException {
+        clearScreen();
+        writeUnBorrowedBooksToConsole(pathFileBooks);
 
-/**
-* @brief Borrows a book.
-* @details Loads the books, searches for the book with the specified ID, updates its loan status, and writes the changes to the file.
-* @param bookId The ID of the book to be borrowed.
-* @param pathFileBooks The path to the file containing book information.
-* @return True if the book is borrowed successfully, false otherwise.
-* @throws FileNotFoundException If the specified file is not found.
-* @throws IOException If an I/O error occurs.
-*/
-public boolean borrowBook(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
-    List<Book> books = loadBooks(pathFileBooks);
-    boolean isFound = false;
+        out.print("Enter the ID of the book you want to borrow: ");
 
-    try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
-        for (Book book : books) {
-            writer.writeInt(book.getId());
-            writer.writeUTF(book.getName());
-            writer.writeBoolean(book.isMarked());
-            writer.writeBoolean(book.isWishlist());
+        int bookId = tryParseInt(scanner.nextLine());
 
-            if (book.getId() == bookId && !book.isLoaned()) {
-                writer.writeBoolean(true);
-                isFound = true;
-            } else {
-                writer.writeBoolean(book.isLoaned());
+        if (bookId == -1) {
+            handleInputError();
+            enterToContinue();
+            return false;
+        }
+
+        return borrowBook(bookId, pathFileBooks);
+    }
+
+    /**
+     * @brief Borrows a book.
+     * @details Loads the books, searches for the book with the specified ID,
+     *          updates its loan status, and writes the changes to the file.
+     * @param bookId        The ID of the book to be borrowed.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is borrowed successfully, false otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean borrowBook(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
+            for (Book book : books) {
+                writer.writeInt(book.getId());
+                writer.writeUTF(book.getName());
+                writer.writeBoolean(book.isMarked());
+                writer.writeBoolean(book.isWishlist());
+
+                if (book.getId() == bookId && !book.isLoaned()) {
+                    writer.writeBoolean(true);
+                    isFound = true;
+                } else {
+                    writer.writeBoolean(book.isLoaned());
+                }
+            }
+        }
+
+        if (isFound) {
+            out.println("Book borrowed successfully.");
+            enterToContinue();
+            return true;
+        }
+
+        out.println("There is no book you want!");
+        enterToContinue();
+        return false;
+    }
+
+    /**
+     * @brief Displays the list of borrowed books to the console.
+     * @details Clears the screen, writes the list of borrowed books to the console,
+     *          and prompts the user to continue.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if there are borrowed books to display, false otherwise.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean viewBorrowedBooks(String pathFileBooks) throws InterruptedException, IOException {
+        clearScreen();
+        boolean result = writeBorrowedBooksToConsole(pathFileBooks);
+        enterToContinue();
+        return result;
+    }
+
+    /**
+     * @brief Manages book loan operations.
+     * @details Displays the loan management menu, processes the user's choice, and
+     *          executes the corresponding operation.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return Always returns true to indicate successful execution.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean loanManagement(String pathFileBooks) throws InterruptedException, IOException {
+        int choice;
+
+        while (true) {
+            loanManagementMenu();
+            choice = tryParseInt(scanner.nextLine());
+
+            if (choice == -1) {
+                handleInputError();
+                enterToContinue();
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    giveBookMenu(pathFileBooks);
+                    break;
+
+                case 2:
+                    borrowBookMenu(pathFileBooks);
+                    break;
+
+                case 3:
+                    viewBorrowedBooks(pathFileBooks);
+                    break;
+
+                case 4:
+                    return false;
+
+                default:
+                    out.println("Invalid choice. Please try again.");
+                    enterToContinue();
+                    break;
             }
         }
     }
 
-    if (isFound) {
-        out.println("Book borrowed successfully.");
+    /**
+     * @brief Lists wishlisted books.
+     * @details Clears the screen, writes the list of wishlisted books to the
+     *          console, and prompts the user to continue.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if there are wishlisted books to display, false otherwise.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     * @throws IOException          If an I/O error occurs.
+     */
+    public boolean listWishList(String pathFileBooks) throws FileNotFoundException, IOException, InterruptedException {
+        clearScreen();
+        boolean result = writeWishlistedBooksToConsole(pathFileBooks);
         enterToContinue();
-        return true;
+        return result;
     }
 
-    out.println("There is no book you want!");
-    enterToContinue();
-    return false;
-}
+    /**
+     * @brief Displays the menu for adding a book to the wishlist.
+     * @details Clears the screen, writes the list of unwishlisted books to the
+     *          console, and prompts the user to enter the ID of the book to add to
+     *          the wishlist.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is added to the wishlist successfully, false
+     *         otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     * @throws InterruptedException  If the thread is interrupted while waiting.
+     */
+    public boolean addToWishListMenu(String pathFileBooks)
+            throws FileNotFoundException, IOException, InterruptedException {
+        clearScreen();
+        writeUnWishlistedBooksToConsole(pathFileBooks);
 
+        out.print("Enter the ID of the book you want to add to your wishlist: ");
+
+        int bookId = tryParseInt(scanner.nextLine());
+
+        if (bookId == -1) {
+            handleInputError();
+            enterToContinue();
+            return false;
+        }
+
+        return addToWishList(bookId, pathFileBooks);
+    }
+
+    /**
+     * @brief Adds a book to the wishlist.
+     * @details Loads the books, searches for the book with the specified ID,
+     *          updates its wishlist status, and writes the changes to the file.
+     * @param bookId        The ID of the book to be added to the wishlist.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is added to the wishlist successfully, false
+     *         otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean addToWishList(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
+            for (Book book : books) {
+                writer.writeInt(book.getId());
+                writer.writeUTF(book.getName());
+                writer.writeBoolean(book.isMarked());
+
+                if (book.getId() == bookId && !book.isWishlist()) {
+                    isFound = true;
+                    writer.writeBoolean(true);
+                } else {
+                    writer.writeBoolean(book.isWishlist());
+                }
+                writer.writeBoolean(book.isLoaned());
+            }
+        }
+
+        if (isFound) {
+            out.println("Book with ID '" + bookId + "' has been added to your wishlist.");
+            enterToContinue();
+            return true;
+        }
+
+        out.println("There is no book with ID '" + bookId + "'.");
+        enterToContinue();
+        return false;
+    }
+
+    /**
+     * @brief Displays the menu for removing a book from the wishlist.
+     * @details Clears the screen, writes the list of wishlisted books to the
+     *          console, and prompts the user to enter the ID of the book to remove
+     *          from the wishlist.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if the book is removed from the wishlist successfully, false
+     *         otherwise.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     * @throws InterruptedException  If the thread is interrupted while waiting.
+     */
+    public boolean removeFromWishListMenu(String pathFileBooks)
+            throws FileNotFoundException, IOException, InterruptedException {
+        clearScreen();
+
+        writeWishlistedBooksToConsole(pathFileBooks);
+
+        int bookId = tryParseInt(scanner.nextLine());
+        if (bookId == -1) {
+            handleInputError();
+            enterToContinue();
+            return false;
+        }
+
+        out.print("Enter the ID of the book you want to remove from your wishlist: ");
+
+        return removeFromWishList(bookId, pathFileBooks);
+    }
 
 }
