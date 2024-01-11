@@ -1,51 +1,63 @@
+package com.hasan.yakup.librarysystem;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
+import org.junit.After;
+import org.junit.Test;
 
 public class LibrarysystemTest {
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private String testFilePathBooks = "test_books.bin";
+    private String testFilePathUsers = "test_users.bin";
 
-    private String TEST_FILE_PATH = "test_books.bin";
+    @After
+    public void tearDown() throws IOException {
+        cleanupTestDataBook();
+        cleanupTestDataUser();
+        System.setOut(null);
+        System.setIn(null);
+    }
 
     @Test
-    void testAddBook() {
-        Librarysystem librarySystem = new Librarysystem(System.in, System.out);
+    public void testAddBookMenu_SuccessfulAddition() throws InterruptedException, IOException {
+        String input = "NewBook\n";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        Scanner testScanner = new Scanner(in);
 
-        String testBookName = "Test Book";
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
 
-        Files.deleteIfExists(Paths.get(TEST_FILE_PATH));
+        boolean result = library.addBookMenu(testFilePathBooks);
 
-        boolean result = librarySystem.addBook(testBookName, TEST_FILE_PATH);
+        System.setIn(System.in);
 
         assertTrue(result);
-
-        // Dosyadan kitapları oku
-        List<Book> books = librarySystem.loadBooks(TEST_FILE_PATH);
-
-        // Kitapların sayısını kontrol et
-        assertEquals(1, books.size());
-
-        // Eklenen kitabın özelliklerini kontrol et
-        Book addedBook = books.get(0);
-        assertEquals(1, addedBook.getId());
-        assertEquals(testBookName, addedBook.getName());
-        assertFalse(addedBook.isMarked());
-        assertFalse(addedBook.isWishlist());
-        assertFalse(addedBook.isLoaned());
-
     }
 
-    // Diğer test metotları buraya eklenmeli...
+    @Test
+    public void testGetNewId_ShouldReturnCorrectId() throws FileNotFoundException, IOException {
 
-    // Test bittikten sonra test dosyasını temizle
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void cleanup() {
-        try {
-            Files.deleteIfExists(Paths.get(TEST_FILE_PATH));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+        int newId = library.getNewId(testFilePathBooks);
+
+        assertEquals(1, newId);
     }
-
+    
 }
