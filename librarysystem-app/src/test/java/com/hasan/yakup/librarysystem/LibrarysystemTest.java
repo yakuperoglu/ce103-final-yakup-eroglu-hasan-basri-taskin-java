@@ -804,7 +804,7 @@ public class LibrarysystemTest {
         assertFalse(result);
 
     }
-    
+
     @Test
     public void testWriteUnMarkedBooksToConsole_ShouldWriteUnmarkedBooks() throws FileNotFoundException, IOException {
         createTestFile();
@@ -900,5 +900,96 @@ public class LibrarysystemTest {
         assertTrue(result);
     }
 
+    @Test
+    public void testMarkAsRead_ShouldntUpdateBookAndReturnFalse() throws FileNotFoundException, IOException {
+
+        createTestFile();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+
+        boolean result = library.markAsRead(2, testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testViewHistory_ShouldWriteMarkedBooksToConsole() throws InterruptedException, IOException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+        boolean result = library.viewHistory(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testViewHistory_ShouldntWriteMarkedBooksToConsole() throws InterruptedException, IOException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+        boolean result = library.viewHistory(testFilePathBooks);
+
+        assertFalse(result);
+
+    }
+
+    @Test
+    public void testReadingTracker_ReturnsFalseOnReturnToUserOperations() throws InterruptedException, IOException {
+
+        createTestFile();
+
+        String inputString = "qwe\n\n321\n\n1\n\n2\n1\n3\n\n4\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.readingTracker(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    private void createTestFile() throws IOException {
+        // Kitaplar
+        List<Book> testBooks = new ArrayList<>();
+        testBooks.add(new Book(1, "Book1", false, false, false));
+        testBooks.add(new Book(2, "Book2", true, true, true));
+        testBooks.add(new Book(3, "Book3", true, true, false));
+        testBooks.add(new Book(4, "Book4", false, false, true));
+
+        // Test dosyasını kitaplarla birlikte oluştur
+        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(testFilePathBooks))) {
+            for (Book book : testBooks) {
+                writer.writeInt(book.getId());
+                writer.writeUTF(book.getName());
+                writer.writeBoolean(book.isMarked());
+                writer.writeBoolean(book.isWishlist());
+                writer.writeBoolean(book.isLoaned());
+            }
+        }
+    }
+
+    private void cleanupTestDataBook() throws IOException {
+        deleteFile(testFilePathBooks);
+    }
+
+    private void cleanupTestDataUser() throws IOException {
+        deleteFile(testFilePathUsers);
+    }
+
+    private void deleteFile(String filePath) throws IOException {
+        Files.deleteIfExists(Paths.get(filePath));
+    }
 
 }
