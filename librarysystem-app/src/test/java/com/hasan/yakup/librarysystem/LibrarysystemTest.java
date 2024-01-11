@@ -804,5 +804,101 @@ public class LibrarysystemTest {
         assertFalse(result);
 
     }
+    
+    @Test
+    public void testWriteUnMarkedBooksToConsole_ShouldWriteUnmarkedBooks() throws FileNotFoundException, IOException {
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+
+        boolean result = library.writeUnMarkedBooksToConsole(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testLogProgress_ShouldWriteBooksAndReturnTrue() throws InterruptedException, IOException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+
+        boolean result = library.logProgress(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testLogProgress_ShouldntWriteBooksAndReturnFalse() throws InterruptedException, IOException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+
+        boolean result = library.logProgress(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testMarkAsReadMenu_InputError() throws FileNotFoundException,
+            IOException, InterruptedException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        String inputString = "qwe\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.markAsReadMenu(testFilePathBooks);
+
+        assertFalse(result);
+
+    }
+
+    @Test
+    public void testMarkAsReadMenu_ShouldWriteMarkedBooksAndReturnTrue()
+            throws FileNotFoundException, IOException, InterruptedException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        String inputString = "4\n\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        boolean result = library.markAsReadMenu(testFilePathBooks);
+
+        assertTrue(result);
+
+    }
+
+    @Test
+    public void testMarkAsRead_ShouldUpdateBookAndReturnTrue() throws IOException {
+
+        createTestFile();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+
+        Librarysystem library = new Librarysystem(new Scanner("\n"), new PrintStream(outContent));
+
+        boolean result = library.markAsRead(1, testFilePathBooks);
+
+        assertTrue(result);
+    }
+
 
 }
