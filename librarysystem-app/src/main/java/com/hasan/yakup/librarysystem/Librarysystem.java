@@ -29,19 +29,20 @@ public class Librarysystem {
     /**
      * @brief Constructor for Librarysystem.
      * @param scanner Scanner object for user input.
-     * @param out PrintStream object for output.
+     * @param out     PrintStream object for output.
      */
     public Librarysystem(Scanner scanner, PrintStream out) {
         this.scanner = scanner;
         this.out = out;
     }
 
-     /**
-     * @brief Gets a new unique ID for a book based on the existing books in the library.
+    /**
+     * @brief Gets a new unique ID for a book based on the existing books in the
+     *        library.
      * @param pathFileBooks The path to the file containing book information.
      * @return A new unique ID for a book.
      * @throws FileNotFoundException If the specified file is not found.
-     * @throws IOException If an I/O error occurs.
+     * @throws IOException           If an I/O error occurs.
      */
     public int getNewId(String pathFileBooks) throws FileNotFoundException, IOException {
         List<Book> books = loadBooks(pathFileBooks);
@@ -51,7 +52,7 @@ public class Librarysystem {
     /**
      * @brief Clears the console screen.
      * @throws InterruptedException If the thread is interrupted while waiting.
-     * @throws IOException If an I/O error occurs.
+     * @throws IOException          If an I/O error occurs.
      */
     public void clearScreen() throws InterruptedException, IOException {
         String operatingSystem = System.getProperty("os.name");
@@ -73,10 +74,10 @@ public class Librarysystem {
     }
 
     /**
- * @brief Attempts to parse the given string into an integer.
- * @param value The string to be parsed.
- * @return The parsed integer if successful, or -1 if parsing fails.
- */
+     * @brief Attempts to parse the given string into an integer.
+     * @param value The string to be parsed.
+     * @return The parsed integer if successful, or -1 if parsing fails.
+     */
     private int tryParseInt(String value) {
         try {
             return Integer.parseInt(value);
@@ -86,22 +87,23 @@ public class Librarysystem {
     }
 
     /**
- * @brief Waits for user input to continue the program.
- * @details Displays a message prompting the user to press any key to continue.
- */
+     * @brief Waits for user input to continue the program.
+     * @details Displays a message prompting the user to press any key to continue.
+     */
     private void enterToContinue() {
         out.println("Press any key to continue...");
         scanner.nextLine();
     }
 
     /**
- * @brief Loads books from a file and returns a list of Book objects.
- * @details Reads book information from the specified file and populates a List of Book objects.
- * @param pathFileBooks The path to the file containing book information.
- * @return List of Book objects representing the books in the library.
- * @throws FileNotFoundException If the specified file is not found.
- * @throws IOException If an I/O error occurs.
- */
+     * @brief Loads books from a file and returns a list of Book objects.
+     * @details Reads book information from the specified file and populates a List
+     *          of Book objects.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return List of Book objects representing the books in the library.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
     public List<Book> loadBooks(String pathFileBooks) throws FileNotFoundException, IOException {
         List<Book> books = new ArrayList<Book>();
 
@@ -124,4 +126,100 @@ public class Librarysystem {
 
         return books;
     }
+
+    /**
+     * @brief Writes all books to the console.
+     * @details Displays information about each book in the library to the console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if books are found and displayed, false if no books are
+     *         available.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean writeBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        for (Book book : books) {
+            isFound = true;
+            String readStatus = book.isMarked() ? "Read" : "Unread";
+            String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
+
+            out.println(
+                    String.format("%d. %s (%s : %s)", book.getId(), book.getName(), readStatus, wishlistStatus));
+        }
+
+        if (!isFound) {
+            out.println("There are no books.");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @brief Writes borrowed books to the console.
+     * @details Displays information about each borrowed book in the library to the
+     *          console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if borrowed books are found and displayed, false if no books are
+     *         borrowed.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean writeBorrowedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        for (Book book : books) {
+            if (book.isLoaned()) {
+                isFound = true;
+                String readStatus = book.isMarked() ? "Read" : "Unread";
+                String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
+
+                out.println(
+                        String.format("%d. %s (%s : %s)", book.getId(), book.getName(), readStatus, wishlistStatus));
+            }
+        }
+
+        if (!isFound) {
+            out.println("There are no books to give back.");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @brief Writes unborrowed books to the console.
+     * @details Displays information about each unborrowed book in the library to
+     *          the console.
+     * @param pathFileBooks The path to the file containing book information.
+     * @return True if unborrowed books are found and displayed, false if all books
+     *         are borrowed.
+     * @throws FileNotFoundException If the specified file is not found.
+     * @throws IOException           If an I/O error occurs.
+     */
+    public boolean writeUnBorrowedBooksToConsole(String pathFileBooks) throws FileNotFoundException, IOException {
+        List<Book> books = loadBooks(pathFileBooks);
+        boolean isFound = false;
+
+        for (Book book : books) {
+            if (!book.isLoaned()) {
+                isFound = true;
+                String readStatus = book.isMarked() ? "Read" : "Unread";
+                String wishlistStatus = book.isWishlist() ? "Wishlist" : "UnWishlisted";
+
+                out.println(
+                        String.format("%d. %s (%s : %s)", book.getId(), book.getName(), readStatus, wishlistStatus));
+            }
+        }
+
+        if (!isFound) {
+            out.println("There are no books to borrow.");
+            return false;
+        }
+
+        return true;
+    }
+
 }
