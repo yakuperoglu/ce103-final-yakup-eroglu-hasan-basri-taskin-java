@@ -321,7 +321,7 @@ public class LibrarysystemTest {
 
         assertFalse(result);
     }
-    
+
     @Test
     public void testUpdateBookMenu_ShouldUpdateBookSuccessfully() throws IOException, InterruptedException {
 
@@ -379,5 +379,47 @@ public class LibrarysystemTest {
         System.setIn(System.in);
     }
 
+    @Test
+    public void testWriteUnBorrowedBooksToConsole_ShouldReturnTrue() throws IOException, InterruptedException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+        boolean result = library.writeUnBorrowedBooksToConsole(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testWriteUnBorrowedBooksToConsole_ShouldntFindBooks() throws FileNotFoundException, IOException {
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+        boolean result = library.writeUnBorrowedBooksToConsole(testFilePathBooks);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testWriteBorrowedBooksToConsole_ShouldWriteBooksAndReturnTrue()
+            throws IOException, InterruptedException {
+
+        createTestFile();
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        Librarysystem library = new Librarysystem(new Scanner(""), new PrintStream(outContent));
+        boolean result = library.writeBorrowedBooksToConsole(testFilePathBooks);
+
+        assertTrue(result);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        System.setIn(System.in);
+    }
 
 }
