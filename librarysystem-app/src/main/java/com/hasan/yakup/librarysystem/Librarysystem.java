@@ -820,5 +820,114 @@ public class Librarysystem {
 
         return giveBook(bookId, pathFileBooks);
     }
+    
+    
+/**
+ * @brief Gives back a borrowed book.
+ * @details Loads the books, searches for the book with the specified ID, updates its loan status, and writes the changes to the file.
+ * @param bookId The ID of the book to be given back.
+ * @param pathFileBooks The path to the file containing book information.
+ * @return True if the book is given back successfully, false otherwise.
+ * @throws FileNotFoundException If the specified file is not found.
+ * @throws IOException If an I/O error occurs.
+ */
+public boolean giveBook(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
+    List<Book> books = loadBooks(pathFileBooks);
+    boolean isFound = false;
+
+    try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
+        for (Book book : books) {
+            writer.writeInt(book.getId());
+            writer.writeUTF(book.getName());
+            writer.writeBoolean(book.isMarked());
+            writer.writeBoolean(book.isWishlist());
+
+            if (book.getId() == bookId && book.isLoaned()) {
+                writer.writeBoolean(false);
+                isFound = true;
+            } else {
+                writer.writeBoolean(book.isLoaned());
+            }
+        }
+    }
+
+    if (isFound) {
+        out.println("Book returned successfully.");
+        enterToContinue();
+        return true;
+    }
+
+    out.println("There is no book you want!");
+    enterToContinue();
+    return false;
+}
+
+/**
+* @brief Displays the menu for borrowing a book.
+* @details Clears the screen, writes the list of available books to the console, and prompts the user to enter the ID of the book to borrow.
+* @param pathFileBooks The path to the file containing book information.
+* @return True if the book is borrowed successfully, false otherwise.
+* @throws FileNotFoundException If the specified file is not found.
+* @throws IOException If an I/O error occurs.
+* @throws InterruptedException If the thread is interrupted while waiting.
+*/
+public boolean borrowBookMenu(String pathFileBooks)
+        throws FileNotFoundException, IOException, InterruptedException {
+    clearScreen();
+    writeUnBorrowedBooksToConsole(pathFileBooks);
+
+    out.print("Enter the ID of the book you want to borrow: ");
+
+    int bookId = tryParseInt(scanner.nextLine());
+
+    if (bookId == -1) {
+        handleInputError();
+        enterToContinue();
+        return false;
+    }
+
+    return borrowBook(bookId, pathFileBooks);
+}
+
+/**
+* @brief Borrows a book.
+* @details Loads the books, searches for the book with the specified ID, updates its loan status, and writes the changes to the file.
+* @param bookId The ID of the book to be borrowed.
+* @param pathFileBooks The path to the file containing book information.
+* @return True if the book is borrowed successfully, false otherwise.
+* @throws FileNotFoundException If the specified file is not found.
+* @throws IOException If an I/O error occurs.
+*/
+public boolean borrowBook(int bookId, String pathFileBooks) throws FileNotFoundException, IOException {
+    List<Book> books = loadBooks(pathFileBooks);
+    boolean isFound = false;
+
+    try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(pathFileBooks))) {
+        for (Book book : books) {
+            writer.writeInt(book.getId());
+            writer.writeUTF(book.getName());
+            writer.writeBoolean(book.isMarked());
+            writer.writeBoolean(book.isWishlist());
+
+            if (book.getId() == bookId && !book.isLoaned()) {
+                writer.writeBoolean(true);
+                isFound = true;
+            } else {
+                writer.writeBoolean(book.isLoaned());
+            }
+        }
+    }
+
+    if (isFound) {
+        out.println("Book borrowed successfully.");
+        enterToContinue();
+        return true;
+    }
+
+    out.println("There is no book you want!");
+    enterToContinue();
+    return false;
+}
+
 
 }
