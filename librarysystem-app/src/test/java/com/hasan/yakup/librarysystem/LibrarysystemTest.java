@@ -99,7 +99,7 @@ public class LibrarysystemTest {
         int result = library.mainMenu(testFilePathUsers, testFilePathBooks);
         assertEquals(0, result);
     }
-    
+
     @Test
     public void testMain_Menu_DefaultChoice_ShouldPrintInvalidChoiceAndExit() throws InterruptedException, IOException {
         String input = "abc\n1231231234\n4";
@@ -154,5 +154,65 @@ public class LibrarysystemTest {
         assertTrue(result);
     }
 
+    @Test
+    public void testLoginUser_InvalidInput_ShouldPrintErrorMessage()
+            throws FileNotFoundException, IOException, InterruptedException {
+
+        User testUser = new User();
+        testUser.setEmail("test@gmail.com");
+        testUser.setPassword("123");
+        String inputString = "\ninvalidemail\ninvalidpassword\n\n";
+
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+        library.registerUser(testUser, testFilePathUsers);
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        System.setIn(new ByteArrayInputStream(inputString.getBytes()));
+
+        boolean result = library.loginUserMenu(testFilePathUsers);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void testViewCatalog_ShouldDisplayBooks() throws IOException,
+            InterruptedException {
+
+        createTestFile();
+
+        InputStream in = new ByteArrayInputStream("\n".getBytes());
+        Scanner testScanner = new Scanner(in);
+
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        boolean result = library.viewCatalog(testFilePathBooks);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testGuestOperation_ShouldDisplayMenuAndExit() throws InterruptedException, IOException {
+        String inputString = "abc\n\n321312\n\n1\n\n2\n";
+        InputStream in = new ByteArrayInputStream(inputString.getBytes());
+        Scanner testScanner = new Scanner(in);
+
+        Librarysystem library = new Librarysystem(testScanner, new PrintStream(outContent));
+
+        ByteArrayOutputStream consoleOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(consoleOutput));
+
+        int result = library.guestOperation(testFilePathUsers);
+
+        assertEquals(result, 0);
+    }
 
 }
