@@ -287,7 +287,6 @@ public class LibrarysystemTest {
     @Test
     public void testBookCataloging_ReturnsFalseOnReturnToUserOperations() throws InterruptedException, IOException {
 
-        // String inputString = "qwe\n1\nqwe\n2\n1\n1\nqwe\n3\n1\nqwe1\n4\n321\n5\n";
         String inputString = "qwe\n\n321\n\n1\nBookName\n2\n1\n\n3\n1\nqwe\n\n4\n\n5\n";
         System.setIn(new ByteArrayInputStream(inputString.getBytes()));
 
